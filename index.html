@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Closing Code — CO/WA Campaign Dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f6f9; color: #1a1a2e; }
+  .header { background: #1a1a2e; color: white; padding: 28px 40px; }
+  .header h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
+  .header p { font-size: 13px; color: #8892a4; margin-top: 4px; }
+  .container { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 32px; }
+  .kpi { background: white; border-radius: 10px; padding: 20px 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+  .kpi .label { font-size: 11px; font-weight: 600; color: #8892a4; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; }
+  .kpi .value { font-size: 26px; font-weight: 700; color: #1a1a2e; }
+  .kpi .value.green { color: #16a34a; }
+  .kpi .value.orange { color: #ea580c; }
+  .kpi .sub { font-size: 12px; color: #8892a4; margin-top: 4px; }
+  .section { background: white; border-radius: 10px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); margin-bottom: 20px; }
+  .section h2 { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.5px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  thead tr { border-bottom: 2px solid #e5e7eb; }
+  th { text-align: left; padding: 8px 10px; font-size: 11px; font-weight: 700; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { padding: 10px 10px; border-bottom: 1px solid #f1f3f5; color: #374151; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f9fafb; }
+  .lead-count { font-weight: 700; color: #1a1a2e; }
+  .lead-zero { color: #d1d5db; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .badge.active { background: #dcfce7; color: #16a34a; }
+  .badge.paused { background: #f3f4f6; color: #6b7280; }
+  .progress-wrap { margin-top: 6px; }
+  .progress-bar { height: 6px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-top: 8px; }
+  .progress-fill { height: 100%; background: #3b82f6; border-radius: 4px; }
+  .campaign-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .campaign-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; }
+  .campaign-card .name { font-size: 12px; font-weight: 700; color: #374151; margin-bottom: 10px; }
+  .campaign-card .stat { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; border-bottom: 1px solid #f3f4f6; }
+  .campaign-card .stat:last-child { border-bottom: none; }
+  .campaign-card .stat span:last-child { font-weight: 600; }
+  .warn { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #9a3412; margin-top: 16px; }
+  .warn strong { font-weight: 700; }
+  .footer { text-align: center; font-size: 11px; color: #9ca3af; padding: 20px 0 32px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Closing Code — CO/WA Campaign Dashboard</h1>
+  <p>Meta Ads · Colorado + Washington · As of September 28, 2026</p>
+</div>
+
+<div class="container">
+
+  <!-- KPI Row -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="label">Total Budget</div>
+      <div class="value">$20,000</div>
+      <div class="sub">CO + WA combined</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Spent to Date</div>
+      <div class="value orange">$3,779</div>
+      <div class="sub">18.9% of budget</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Budget Remaining</div>
+      <div class="value green">$16,221</div>
+      <div class="sub">81.1% remaining</div>
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" style="width:18.9%"></div></div>
+      </div>
+    </div>
+    <div class="kpi">
+      <div class="label">Total Leads</div>
+      <div class="value">13</div>
+      <div class="sub">Sep 18 – Sep 28</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Blended CPL</div>
+      <div class="value">$291</div>
+      <div class="sub">per lead</div>
+    </div>
+  </div>
+
+  <!-- Daily Table -->
+  <div class="section">
+    <h2>Leads Per Day</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Campaign</th>
+          <th>Leads</th>
+          <th>Spend</th>
+          <th>CPL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Sep 18</td>
+          <td><span class="badge paused">Paused</span> Test 1</td>
+          <td class="lead-zero">—</td>
+          <td>$181.81</td>
+          <td class="lead-zero">—</td>
+        </tr>
+        <tr>
+          <td>Sep 19</td>
+          <td><span class="badge paused">Paused</span> Test 1</td>
+          <td class="lead-count">2</td>
+          <td>$341.36</td>
+          <td>$170.68</td>
+        </tr>
+        <tr>
+          <td>Sep 20</td>
+          <td><span class="badge paused">Paused</span> Test 1</td>
+          <td class="lead-zero">—</td>
+          <td>$451.04</td>
+          <td class="lead-zero">—</td>
+        </tr>
+        <tr>
+          <td>Sep 21</td>
+          <td><span class="badge paused">Paused</span> Test 1</td>
+          <td class="lead-count">1</td>
+          <td>$297.21</td>
+          <td>$297.21</td>
+        </tr>
+        <tr>
+          <td>Sep 22</td>
+          <td><span class="badge active">Active</span> Test 2</td>
+          <td class="lead-count">1</td>
+          <td>$343.65</td>
+          <td>$343.65</td>
+        </tr>
+        <tr>
+          <td>Sep 23</td>
+          <td><span class="badge active">Active</span> Test 2</td>
+          <td class="lead-count">1</td>
+          <td>$473.30</td>
+          <td>$473.30</td>
+        </tr>
+        <tr>
+          <td>Sep 24</td>
+          <td><span class="badge active">Active</span> Test 2</td>
+          <td class="lead-count">1</td>
+          <td>$396.23</td>
+          <td>$396.23</td>
+        </tr>
+        <tr>
+          <td>Sep 25</td>
+          <td><span class="badge active">Active</span> Test 2</td>
+          <td class="lead-count">3</td>
+          <td>$312.99</td>
+          <td>$104.33</td>
+        </tr>
+        <tr>
+          <td>Sep 26</td>
+          <td><span class="badge active">Active</span> Test 2</td>
+          <td class="lead-zero">—</td>
+          <td>$317.92</td>
+          <td class="lead-zero">—</td>
+        </tr>
+        <tr>
+          <td>Sep 27</td>
+          <td><span class="badge active">Active</span> Test 2</td>
+          <td class="lead-count">2</td>
+          <td>$434.28</td>
+          <td>$217.14</td>
+        </tr>
+        <tr>
+          <td>Sep 28 *</td>
+          <td><span class="badge active">Active</span> Test 2</td>
+          <td class="lead-count">2</td>
+          <td>$238.88</td>
+          <td>$119.44</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:11px;color:#9ca3af;margin-top:12px">* Sep 28 is a partial day — campaign still running</p>
+  </div>
+
+  <!-- Campaign Breakdown -->
+  <div class="section">
+    <h2>Campaign Breakdown</h2>
+    <div class="campaign-grid">
+      <div class="campaign-card">
+        <div class="name">CO/WA Creative Test 2 &nbsp;<span class="badge active">Active</span></div>
+        <div class="stat"><span>Started</span><span>Sep 22, 2026</span></div>
+        <div class="stat"><span>Duration</span><span>7 days</span></div>
+        <div class="stat"><span>Spent</span><span>$2,507.87</span></div>
+        <div class="stat"><span>Leads</span><span>10</span></div>
+        <div class="stat"><span>Leads / day</span><span>1.43</span></div>
+        <div class="stat"><span>CPL</span><span>$250.79</span></div>
+      </div>
+      <div class="campaign-card">
+        <div class="name">CO/WA Creative Test 1 &nbsp;<span class="badge paused">Paused</span></div>
+        <div class="stat"><span>Started</span><span>Sep 18, 2026</span></div>
+        <div class="stat"><span>Duration</span><span>4 days (paused Sep 21)</span></div>
+        <div class="stat"><span>Spent</span><span>$1,271.42</span></div>
+        <div class="stat"><span>Leads</span><span>3</span></div>
+        <div class="stat"><span>Leads / day</span><span>0.75</span></div>
+        <div class="stat"><span>CPL</span><span>$423.81</span></div>
+      </div>
+    </div>
+    <div class="warn">
+      <strong>⚠️ Active campaign is nearly out of budget.</strong> Test 2 has only $170.50 left in its Meta allocation at ~$340–$450/day spend. It will pause automatically within hours unless the campaign budget is topped up.
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">Prepared by Kurios · Data pulled from Meta Ads API · Sep 28, 2026</div>
+
+</body>
+</html>
