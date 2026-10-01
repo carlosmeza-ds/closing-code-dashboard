@@ -211,7 +211,7 @@
         </tr>
       </tbody>
     </table>
-    <p style="font-size:11px;color:#9ca3af;margin-top:12px">* Oct 1 is a partial day — campaign still running</p>
+    <p id="partial-note" style="font-size:11px;color:#9ca3af;margin-top:12px">* Oct 1 is a partial day — campaign still running</p>
   </div>
 
   <!-- Campaign Breakdown -->
@@ -243,5 +243,54 @@
 
 <div class="footer">Prepared by Kurios · Data pulled from Meta Ads API · Oct 1, 2026</div>
 
+
+<script>
+// Live data: Cloudflare Worker proxies Meta Ads insights (token stays server-side). Refreshes every 5 minutes.
+(function(){
+var API='https://closing-code-dashboard-api.emandi-deploy.workers.dev/';
+var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fd(d){var p=d.split('-');return M[+p[1]-1]+' '+(+p[2]);}
+function fy(d){var p=d.split('-');return ['January','February','March','April','May','June','July','August','September','October','November','December'][+p[1]-1]+' '+(+p[2])+', '+p[0];}
+function $(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});}
+function $2(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function tn(name){var m=name.match(/Test_(\d+)/);return m?'Test '+m[1]:name;}
+function badge(st){return st==='ACTIVE'?'<span class="badge active">Active</span>':'<span class="badge paused">Paused</span>';}
+function render(d){
+  var pct=d.spend/d.budget*100, rem=d.budget-d.spend;
+  document.querySelector('.kpi-grid').innerHTML=
+   '<div class="kpi"><div class="label">Total Budget</div><div class="value">'+$(d.budget)+'</div><div class="sub">CO + WA combined</div></div>'+
+   '<div class="kpi"><div class="label">Spent to Date</div><div class="value orange">'+$(d.spend)+'</div><div class="sub">'+pct.toFixed(1)+'% of budget</div></div>'+
+   '<div class="kpi"><div class="label">Budget Remaining</div><div class="value green">'+$(rem)+'</div><div class="sub">'+(100-pct).toFixed(1)+'% remaining</div><div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:'+pct.toFixed(1)+'%"></div></div></div></div>'+
+   '<div class="kpi"><div class="label">Total Leads</div><div class="value">'+d.leads+'</div><div class="sub">'+fd(d.first)+' – '+fd(d.last)+'</div></div>'+
+   '<div class="kpi"><div class="label">Blended CPL</div><div class="value">'+(d.leads?$(d.spend/d.leads):'—')+'</div><div class="sub">per lead</div></div>'+
+   '<div class="kpi"><div class="label">Leads / Day</div><div class="value">'+(d.leads/d.days).toFixed(2)+'</div><div class="sub">avg across '+d.days+' days</div></div>';
+  var rows='';
+  d.daily.forEach(function(r){
+    var partial=(r.date===d.last&&r.status==='ACTIVE')?' *':'';
+    rows+='<tr><td>'+fd(r.date)+partial+'</td><td>'+badge(r.status)+' '+tn(r.campaign)+'</td>'+
+      (r.leads?'<td class="lead-count">'+r.leads+'</td>':'<td class="lead-zero">—</td>')+
+      '<td>'+$2(r.spend)+'</td>'+(r.leads?'<td>'+$2(r.spend/r.leads)+'</td>':'<td class="lead-zero">—</td>')+'</tr>';
+  });
+  document.querySelector('.section table tbody').innerHTML=rows;
+  var note=document.getElementById('partial-note'); if(note) note.textContent='* '+fd(d.last)+' is a partial day — campaign still running';
+  var cards='';
+  d.campaigns.slice().sort(function(a,b){return b.started.localeCompare(a.started);}).forEach(function(c){
+    cards+='<div class="campaign-card"><div class="name">CO/WA Creative '+tn(c.name)+' &nbsp;'+badge(c.status)+'</div>'+
+      '<div class="stat"><span>Started</span><span>'+fy(c.started).replace(/(\w+) /,function(m){return m.slice(0,3)+' ';})+'</span></div>'+
+      '<div class="stat"><span>Duration</span><span>'+c.days+' days</span></div>'+
+      '<div class="stat"><span>Spent</span><span>'+$2(c.spend)+'</span></div>'+
+      '<div class="stat"><span>Leads</span><span>'+c.leads+'</span></div>'+
+      '<div class="stat"><span>Leads / day</span><span>'+(c.leads/Math.max(c.days,1)).toFixed(2)+'</span></div>'+
+      '<div class="stat"><span>CPL</span><span>'+(c.leads?$2(c.spend/c.leads):'—')+'</span></div></div>';
+  });
+  document.querySelector('.campaign-grid').innerHTML=cards;
+  var t=new Date(d.updated).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'});
+  document.querySelector('.header-text p').textContent='Meta Ads · Colorado + Washington · Live · Updated '+t;
+  document.querySelector('.footer').textContent='Prepared by Kurios · Live data from Meta Ads API · refreshes every 5 minutes · last update '+t;
+}
+function load(){fetch(API,{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){if(!d.error)render(d);}).catch(function(){});}
+load(); setInterval(load,300000);
+})();
+</script>
 </body>
 </html>
